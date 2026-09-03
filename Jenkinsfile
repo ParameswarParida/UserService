@@ -41,24 +41,29 @@ pipeline {
             }
         }
 
-        stage('Push to Docker Hub') {
-            environment {
-                DOCKER_CREDENTIALS = credentials('dockerhub-credentials')
-            }
+                stage('Push to Docker Hub') {
+                    environment {
+                        DOCKER_CREDENTIALS = credentials('dockerhub-credentials')
+                    }
 
-            steps {
-                sh '''
-                    set +x
-                    echo "$DOCKER_CREDENTIALS_PSW" |
-                      docker login \
-                        --username "$DOCKER_CREDENTIALS_USR" \
-                        --password-stdin
+                    steps {
+                        sh '''
+                            set +x
+                            echo "$DOCKER_CREDENTIALS_PSW" |
+                              docker login \
+                                --username "$DOCKER_CREDENTIALS_USR" \
+                                --password-stdin
+                        '''
 
-                    docker push "$DOCKER_IMAGE:$BUILD_NUMBER"
-                    docker push "$DOCKER_IMAGE:latest"
-                '''
-            }
-        }
+                        retry(3) {
+                            sh 'docker push "$DOCKER_IMAGE:$BUILD_NUMBER"'
+                        }
+
+                        retry(3) {
+                            sh 'docker push "$DOCKER_IMAGE:latest"'
+                        }
+                    }
+                }
     }
 
     post {
