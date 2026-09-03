@@ -11,12 +11,12 @@ public class UserController {
 
     @GetMapping
     public String test() {
-        return "Heloo From UserController";
+        return "Heloo From UserController --------";
     }
 
     @GetMapping("/second")
     public String test1() {
-        return "Second Hello";
+        return "Second Hello second commint";
     }
 
 }
