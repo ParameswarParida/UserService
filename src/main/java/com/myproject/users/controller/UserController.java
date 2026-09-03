@@ -14,4 +14,9 @@ public class UserController {
         return "Heloo From UserController";
     }
 
+    @GetMapping("/second")
+    public String test1() {
+        return "Second Hello";
+    }
+
 }
